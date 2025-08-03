@@ -1,0 +1,65 @@
+package ${package.Controller};
+
+import ${package.Service}.${table.serviceName};
+import ${package.Entity}.${entity};
+import ${package.ModuleName}.dto.${entity}DTO;
+import ${package.ModuleName}.vo.${entity}VO;
+import com.example.common.response.ApiResponse;
+import com.example.common.request.PageRequest;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+import io.swagger.annotations.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/${table.entityPath}")
+@Api(tags = "${entity} 接口")
+public class ${entity}Controller {
+
+    @Autowired
+    private ${table.serviceName} ${table.entityPath}Service;
+
+    @ApiOperation("分页查询")
+    @PostMapping("/page")
+    public ApiResponse<List<${entity}VO>> page(@RequestBody PageRequest pageRequest) {
+        // 示例逻辑：实际应调用分页服务
+        return ApiResponse.success(null);
+    }
+
+    @ApiOperation("根据ID查询详情")
+    @GetMapping("/{id}")
+    public ApiResponse<${entity}VO> getById(@PathVariable Long id) {
+        // 示例逻辑：调用Service方法获取
+        return ApiResponse.success(null);
+    }
+
+    @ApiOperation("新增数据")
+    @PostMapping
+    public ApiResponse<String> create(@RequestBody ${entity}DTO dto) {
+        // 示例逻辑：dto 转 entity 后保存
+        return ApiResponse.success("创建成功");
+    }
+
+    @ApiOperation("更新数据")
+    @PutMapping("/{id}")
+    public ApiResponse<String> update(@PathVariable Long id, @RequestBody ${entity}DTO dto) {
+        // 示例逻辑：根据ID更新
+        return ApiResponse.success("更新成功");
+    }
+
+    @ApiOperation("删除数据")
+    @DeleteMapping("/{id}")
+    public ApiResponse<String> delete(@PathVariable Long id) {
+        // 示例逻辑：调用Service删除
+        return ApiResponse.success("删除成功");
+    }
+
+    @ApiOperation("批量删除")
+    @PostMapping("/deleteBatch")
+    public ApiResponse<String> deleteBatch(@RequestBody List<Long> ids) {
+        // 示例逻辑：调用Service批量删除
+        return ApiResponse.success("批量删除成功");
+    }
+}

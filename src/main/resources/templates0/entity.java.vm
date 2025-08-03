@@ -1,0 +1,19 @@
+package ${package.Entity};
+
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
+import java.util.Date;
+
+@Data
+@ApiModel("${entity} 实体")
+public class ${entity} {
+    @ApiModelProperty("主键ID")
+    private Long id;
+    
+    @ApiModelProperty("创建时间")
+    private Date createTime;
+    
+    @ApiModelProperty("更新时间")
+    private Date updateTime;
+}
