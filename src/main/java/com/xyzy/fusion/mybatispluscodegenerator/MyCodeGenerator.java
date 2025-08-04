@@ -21,7 +21,8 @@ public class MyCodeGenerator {
     String url = "jdbc:mysql://localhost:3316/spdb?serverTimezone=GMT%2B8";
     String username = "root";
     String password = "root";
-    String packageName = "com.xyzy.fusion.spatial.spatialcapsule";
+    //String packageName = "com.xyzy.fusion.spatial.spatialcapsule";
+    String packageName = "cn.com.taiji.fusion.spatial.spatialcapsule";
     String outputDir = "D:\\codegen-output\\2"; //System.getProperty("user.dir") + "src/main/java";
 
     void GenCode(){
@@ -33,8 +34,9 @@ public class MyCodeGenerator {
         FastAutoGenerator.create(url, username, password)
             .globalConfig(builder -> {
                 builder.author("csm")        // 设置作者
-                        .enableSwagger()        // 开启 swagger 模式 默认值:false
-                        .disableOpenDir()       // 禁止打开输出目录 默认值:true
+                        //.enableSwagger()        // 开启 swagger 模式 默认值:false
+                        .enableSpringdoc()        // 开启 springdoc 模式 默认值:false
+                        //.disableOpenDir()       // 禁止打开输出目录 默认值:true
                         .commentDate("yyyy-MM-dd") // 注释日期
                         .dateType(DateType.ONLY_DATE)   //定义生成的实体类中日期类型 DateType.ONLY_DATE 默认值: DateType.TIME_PACK
                         .outputDir(outputDir + "/java"); // 指定输出目录
@@ -68,22 +70,22 @@ public class MyCodeGenerator {
 
             .injectionConfig(injectConfig -> {
                 Map<String,Object> customMap = new HashMap<>();
-                customMap.put("abc","1234");
+                customMap.put("packageName",packageName);
                 injectConfig.customMap(customMap); //注入自定义属性
                 injectConfig.customFile(new CustomFile.Builder()
-                        .fileName("entityDTO.java") //文件名称
+                        .fileName("DTO.java") //文件名称
                         .templatePath("templates/entityDTO.java.ftl") //指定生成模板路径
                         .packageName("model.dto") //包名,自3.5.10开始,可通过在package里面获取自定义包全路径,低版本下无法获取,示例:package.entityDTO
                         .build());
                 injectConfig.customFile(new CustomFile.Builder()
-                        .fileName("entityVO.java") //文件名称
+                        .fileName("VO.java") //文件名称
                         .templatePath("templates/entityVO.java.ftl") //指定生成模板路径
                         .packageName("model.vo") //包名,自3.5.10开始,可通过在package里面获取自定义包全路径,低版本下无法获取,示例:package.entityVO
                         .build());
             })
 
             .strategyConfig(builder -> {
-                builder.addInclude("user", "spb_unit") // 设置需要生成的表名 可边长参数“user”, “user1”
+                builder.addInclude("spb_unit") // 设置需要生成的表名 可边长参数“user”, “user1”
                     .addTablePrefix("tb_", "gms_", "t_") // 设置过滤表前缀
                     .serviceBuilder()                    //service策略配置
                     .formatServiceFileName("%sService")

@@ -1,4 +1,4 @@
-package ${package.Entity};
+package ${package.Parent}.<#if package.ModuleName?? && package.ModuleName != "">${package.ModuleName}.</#if>model.vo;
 
 <#list table.importPackages as pkg>
 import ${pkg};
@@ -41,11 +41,11 @@ import lombok.experimental.Accessors;
 @ApiModel(value = "${entity}对象", description = "${table.comment!}")
 </#if>
 <#if superEntityClass??>
-public class ${entity} extends ${superEntityClass}<#if activeRecord><${entity}></#if> {
+public class ${entity}VO extends ${superEntityClass}<#if activeRecord><${entity}></#if> {
 <#elseif activeRecord>
-public class ${entity} extends Model<${entity}> {
+public class ${entity}VO extends Model<${entity}> {
 <#elseif entitySerialVersionUID>
-public class ${entity} implements Serializable {
+public class ${entity}VO implements Serializable {
 <#else>
 public class ${entity}VO {
 </#if>
