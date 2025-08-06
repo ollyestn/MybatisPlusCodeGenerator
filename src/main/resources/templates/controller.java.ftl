@@ -104,7 +104,7 @@ public class ${table.controllerName} {
         try {
             //List<${table.entityName}VO> list = ${table.entityName?uncap_first}Service.listByPage(pageNum, pageSize);
             Page<${table.entityName}> page = new Page<>(pageNum, pageSize);
-            List<${table.entityName}> list = spbUnitService.list(page);
+            List<${table.entityName}> list = ${table.entityName?uncap_first}Service.list(page);
             long total = ${table.entityName?uncap_first}Service.count();
             
             Map<String, Object> pageInfo = new HashMap<>();
