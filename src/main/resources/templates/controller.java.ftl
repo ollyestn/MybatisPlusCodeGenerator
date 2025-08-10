@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 <#if restControllerStyle>
@@ -82,15 +84,27 @@ public class ${table.controllerName} {
      * 查询所有
      */
     @GetMapping
-    public ResponseEntity<ApiResponse<List<${table.entityName}VO>>> listAll() {
-        ApiResponse<List<${table.entityName}VO>> result = null;
+    public ApiResponse<List<${table.entityName}VO>> listAll() {
+        //ApiResponse<List<${table.entityName}VO>> result = null;
+        //try {
+        //    List<${table.entityName}VO> list = ${table.entityName?uncap_first}Service.listObjs();
+        //    result = new ApiResponse<List<${table.entityName}VO>>(true, "200, 查询成功", list);
+        //} catch (Exception e) {
+        //    result = new ApiResponse<List<${table.entityName}VO>>(false, "500, 查询失败: " + e.getMessage(), null);
+        //}
+        //return ResponseEntity.ok(result);
         try {
-            List<${table.entityName}VO> list = ${table.entityName?uncap_first}Service.listObjs();
-            result = new ApiResponse<List<${table.entityName}VO>>(true, "200, 查询成功", list);
+            List<${table.entityName}VO> list = ${table.entityName?uncap_first}Service.list().stream()
+                .map(${table.entityName?uncap_first} -> {
+                    ${table.entityName}VO vo = new ${table.entityName}VO();
+                    BeanUtils.copyProperties(${table.entityName?uncap_first}, vo); // Spring 的 BeanUtils 不抛受检异常
+                    return vo;
+                })
+                .collect(Collectors.toList());
+            return ApiResponse.success(list);
         } catch (Exception e) {
-            result = new ApiResponse<List<${table.entityName}VO>>(false, "500, 查询失败: " + e.getMessage(), null);
+            return ApiResponse.error(e.getMessage());
         }
-        return ResponseEntity.ok(result);
     }
 
     /**

@@ -85,7 +85,8 @@ public class MyCodeGenerator {
             })
 
             .strategyConfig(builder -> {
-                builder.addInclude("spb_unit", "dev_to_spb", "obj_to_spb", "jk_dev_to_spb", "jk_obj_to_spb", "jk_spaceidinfo") // 设置需要生成的表名 可边长参数“user”, “user1”
+                // "spb_unit", "dev_to_spb", "obj_to_spb", "jk_dev_to_spb", "jk_obj_to_spb", "jk_spaceidinfo"
+                builder.addInclude("spcode_engeer", "spcode_project") // 设置需要生成的表名 可边长参数“user”, “user1”
                     .addTablePrefix("tb_", "gms_", "t_") // 设置过滤表前缀
                     .serviceBuilder()                    //service策略配置
                     .formatServiceFileName("%sService")
