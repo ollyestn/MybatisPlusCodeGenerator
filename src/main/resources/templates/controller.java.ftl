@@ -11,7 +11,9 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,6 +39,7 @@ import ${superControllerClassPackage};
  * @author ${author}
  * @since ${date}
  */
+@Slf4j
 @Tag(name = "${table.comment}")
 <#if restControllerStyle>
 @RestController
@@ -56,6 +59,8 @@ public class ${table.controllerName} {
     @Autowired
     private ${table.entityName}Service ${table.entityName?uncap_first}Service;
 
+    private final Logger log = LoggerFactory.getLogger(${table.controllerName}.class);
+
     /**
      * 根据ID查询:
 	 * table.primaryKey.javaType
@@ -63,6 +68,7 @@ public class ${table.controllerName} {
      */
     @GetMapping("/{${table.indexList[0].columnName}}")
     public ApiResponse<${table.entityName}VO> getById(@PathVariable Long ${table.indexList[0].columnName}) {
+        log.info("enter getById...");
         try {
             ${table.entityName} ${table.entityName?uncap_first} = ${table.entityName?uncap_first}Service.getById(${table.indexList[0].columnName});
             if (${table.entityName?uncap_first} != null) {
@@ -71,9 +77,11 @@ public class ${table.controllerName} {
 
                 return ApiResponse.success(${table.entityName?uncap_first}VO);
             } else {
+                log.error("404, 查询失败！ ");
                 return new ApiResponse<${table.entityName}VO>(404, "数据不存在", null);
             }
         } catch (Exception e) {
+            log.error("500, 查询失败: " + e.getMessage());
             return ApiResponse.error(500, "查询失败: " + e.getMessage());
         }
     }
@@ -83,6 +91,7 @@ public class ${table.controllerName} {
      */
     @GetMapping
     public ApiResponse<List<${table.entityName}VO>> listAll() {
+        log.info("enter listAll...");
         try {
             List<${table.entityName}VO> list = ${table.entityName?uncap_first}Service.list().stream()
                 .map(${table.entityName?uncap_first} -> {
@@ -93,6 +102,7 @@ public class ${table.controllerName} {
                 .collect(Collectors.toList());
             return ApiResponse.success(list);
         } catch (Exception e) {
+            log.error("500, 查询失败: " + e.getMessage());
             return ApiResponse.error(500, "查询失败: " + e.getMessage());
         }
 
@@ -107,6 +117,7 @@ public class ${table.controllerName} {
     public ApiResponse<Map<String, Object>> listByPage(
             @RequestParam(defaultValue = "1") int pageNum,
             @RequestParam(defaultValue = "10") int pageSize) {
+        log.info("enter listByPage...");
         try {
             //List<${table.entityName}VO> list = ${table.entityName?uncap_first}Service.listByPage(pageNum, pageSize);
             Page<${table.entityName}> page = new Page<>(pageNum, pageSize);
@@ -122,6 +133,7 @@ public class ${table.controllerName} {
 
             return ApiResponse.success(pageInfo);
         } catch (Exception e) {
+            log.error("500, 查询失败: " + e.getMessage());
             return ApiResponse.error(500, "查询失败: " + e.getMessage());
         }
     }
@@ -131,14 +143,18 @@ public class ${table.controllerName} {
      */
     @PostMapping
     public ApiResponse<${table.entityName}> save(@RequestBody ${table.entityName} ${table.entityName?uncap_first}) {
+        log.info("enter save...");
         try {
             boolean success = ${table.entityName?uncap_first}Service.save(${table.entityName?uncap_first});
             if (success) {
+                log.error("200, 新增成功！ ");
                 return ApiResponse.success(${table.entityName?uncap_first});
             } else {
+                log.error("500, 新增失败！");
                 return new ApiResponse<${table.entityName}>(500, "保存失败" , null);
             }
         } catch (Exception e) {
+            log.error("500, 保存失败: " + e.getMessage());
             return ApiResponse.error(500, "保存失败: " + e.getMessage());
         }
     }
@@ -153,15 +169,19 @@ public class ${table.controllerName} {
     public ApiResponse<${table.entityName}> updateById(
             @PathVariable Long ${table.indexList[0].columnName},
             @RequestBody ${table.entityName} ${table.entityName?uncap_first}) {
+        log.info("enter updateById...");
         try {
             ${table.entityName?uncap_first}.set${table.indexList[0].columnName?cap_first}(${table.indexList[0].columnName});
             boolean success = ${table.entityName?uncap_first}Service.updateById(${table.entityName?uncap_first});
             if (success) {
-               return ApiResponse.success(${table.entityName?uncap_first});
+                log.info("200, 更新成功！");
+                return ApiResponse.success(${table.entityName?uncap_first});
             } else {
-               return new ApiResponse<${table.entityName}>(500, "更新失败" , null);
+                log.error("500, 更新失败！");
+                return new ApiResponse<${table.entityName}>(500, "更新失败" , null);
             }
         } catch (Exception e) {
+            log.error("500, 更新失败: " + e.getMessage());
             return ApiResponse.error(500, "更新失败: " + e.getMessage());
         }
     }
@@ -173,14 +193,18 @@ public class ${table.controllerName} {
      */
     @DeleteMapping("/{${table.indexList[0].columnName}}")
     public ApiResponse<${table.entityName}> removeById(@PathVariable Long ${table.indexList[0].columnName}) {
+        log.info("enter updateById...");
         try {
             boolean success = ${table.entityName?uncap_first}Service.removeById(${table.indexList[0].columnName});
             if (success) {
-                return new ApiResponse<${table.entityName}>(200, "删除成功" , null);
+                log.info("删除成功！");
+                return new ApiResponse<${table.entityName}>(200, "删除成功！" , null);
             } else {
-                return new ApiResponse<${table.entityName}>(500, "删除失败" , null);
+                log.error("删除失败！");
+                return new ApiResponse<${table.entityName}>(500, "删除失败！" , null);
             }
         } catch (Exception e) {
+            log.error("删除失败: " + e.getMessage());
             return ApiResponse.error(500, "删除失败: " + e.getMessage());
         }
     }
@@ -191,14 +215,18 @@ public class ${table.controllerName} {
      */
     @DeleteMapping("/batch")
     public ApiResponse<List<${table.entityName}>> removeByIds(@RequestBody List<Long> ids) {
+        log.info("enter remvoeByIds...");
         try {
             boolean success = ${table.entityName?uncap_first}Service.removeByIds(ids);
             if (success) {
+               log.info("200, 批量删除成功！");
                return new ApiResponse<List<${table.entityName}>>(200, "批量删除成功" , null);
             } else {
+               log.info("500, 删除删除失败！");
                return new ApiResponse<List<${table.entityName}>>(500, "批量删除失败" , null);
             }
         } catch (Exception e) {
+            log.info("500, 批量删除失败: " + e.getMessage());
             return ApiResponse.error(500, "批量删除失败: " + e.getMessage());
         }
     }
